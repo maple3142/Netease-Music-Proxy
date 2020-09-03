@@ -24,20 +24,18 @@ namespace Netease_Music_Proxy
     /// </summary>
     public partial class MainWindow : Window
     {
-        private NeteaseMusicConfigHelper helper;
+
+        private NeteaseMusicProxyManager manager = new NeteaseMusicProxyManager();
         public MainWindow()
         {
             InitializeComponent();
-            helper = new NeteaseMusicConfigHelper();
-            if (!helper.isConfigExist())
+            if (!manager.IsAbleToUpdateConfig())
             {
                 autoUpdateProxyCheckBox.IsEnabled = false;
                 autoUpdateProxyCheckBox.ToolTip = "Cannot read Netease Music config.";
             }
             var isRunning = Process.GetProcessesByName("cloudmusic").FirstOrDefault(p => p.MainModule.FileName.Contains("Netease")) != default(Process);
         }
-
-        private MusicProxy proxy;
         private void ToggleClicked(object sender, RoutedEventArgs e)
         {
             var isCloudMusicRunning = Process.GetProcessesByName("cloudmusic").FirstOrDefault(p => p.MainModule.FileName.Contains("Netease")) != default(Process);
@@ -46,39 +44,31 @@ namespace Netease_Music_Proxy
                 MessageBox.Show("Netease Music is running, please close it first before changing proxy status.", "Warning");
                 return;
             }
-            if (proxy == null)
+            if (!manager.IsProxyRunning())
             {
-                proxy = new MusicProxy();
-                int port = proxy.Start();
+                manager.Start();
                 toggleBtn.Content = "Stop";
-                writeLine("Proxy server listening on port " + port);
+                WriteLine("Proxy server listening on port " + manager.GetPort());
                 if (autoUpdateProxyCheckBox.IsChecked ?? false)
                 {
-                    var cfg = helper.readConfig();
-                    cfg.Proxy.Type = "http";
-                    cfg.Proxy.http.Host = "localhost";
-                    cfg.Proxy.http.Port = Convert.ToString(port);
-                    cfg.Proxy.http.UserName = "";
-                    cfg.Proxy.http.Password = "";
-                    helper.writeConfig(cfg);
-                    writeLine("Updated config to use proxy");
+                    manager.UpdateConfigAccordingly();
+                    WriteLine("Updated config to use proxy");
                 }
             }
             else
             {
-                proxy.Stop();
-                proxy = null;
+                manager.Stop();
                 toggleBtn.Content = "Start";
-                writeLine("Proxy server stopped");
+                WriteLine("Proxy server stopped");
                 if (autoUpdateProxyCheckBox.IsChecked ?? false)
                 {
-                    helper.restoreConfig();
-                    writeLine("Restored orignal config");
+                    manager.RestoreConfig();
+                    WriteLine("Restored orignal config");
                 }
             }
         }
 
-        private void writeLine(string str)
+        private void WriteLine(string str)
         {
             outputBox.Text += str + "\n";
         }
@@ -91,7 +81,7 @@ namespace Netease_Music_Proxy
 
         private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (proxy != null)
+            if (manager.IsProxyRunning())
             {
                 e.Cancel = true;
                 MessageBox.Show("Please stop proxy before closing", "Warning");

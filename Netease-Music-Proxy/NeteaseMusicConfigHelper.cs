@@ -19,25 +19,25 @@ namespace Netease_Music_Proxy
             configPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "..\\Local\\Netease\\CloudMusic\\Config");
         }
 
-        public bool isConfigExist()
+        public bool ConfigExists()
         {
             return File.Exists(configPath);
         }
 
         private string originalJson;
 
-        public dynamic readConfig()
+        public dynamic ReadConfig()
         {
             originalJson = File.ReadAllText(configPath);
             return JObject.Parse(originalJson);
         }
 
-        public void writeConfig(dynamic obj)
+        public void WriteConfig(dynamic obj)
         {
             File.WriteAllText(configPath, JsonConvert.SerializeObject(obj));
         }
 
-        public void restoreConfig()
+        public void RestoreConfig()
         {
             File.WriteAllText(configPath, originalJson);
         }
