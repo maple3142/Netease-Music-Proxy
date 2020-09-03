@@ -1,0 +1,34 @@
+﻿<Window x:Class="Netease_Music_Proxy.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Netease_Music_Proxy"
+        mc:Ignorable="d"
+        Title="Netease Music Proxy" Height="300" Width="480" Closing="WindowClosing">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="0,10,0,0"/>
+                </Style>
+            </StackPanel.Resources>
+            <Button x:Name="toggleBtn" Width="75" Click="ToggleClicked" Content="Start"/>
+            <Button x:Name="launchBtn" Width="75" Content="Launch"/>
+        </StackPanel>
+        <CheckBox x:Name="autoUpdateProxyCheckBox" Content="Automatically update Netease Music proxy config" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTipService.ShowOnDisabled="True" IsChecked="True"/>
+        <Border BorderThickness="1" BorderBrush="Black" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
+            <ScrollViewer x:Name="outputScrollViewer" Padding="5" ScrollChanged="OutputScrollChanged">
+                <TextBlock x:Name="outputBox"  TextWrapping="Wrap" ></TextBlock>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Window>
