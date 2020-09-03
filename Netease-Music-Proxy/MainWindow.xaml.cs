@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -94,6 +95,21 @@ namespace Netease_Music_Proxy
             {
                 e.Cancel = true;
                 MessageBox.Show("Please stop proxy before closing", "Warning");
+            }
+        }
+
+        private void LaunchClicked(object sender, RoutedEventArgs e)
+        {
+            var path64 = @"C:\Program Files (x86)\Netease\CloudMusic\cloudmusic.exe";
+            var path32 = @"C:\Program Files\Netease\CloudMusic\cloudmusic.exe";
+            var path = Environment.Is64BitOperatingSystem ? path64 : path32;
+            if (File.Exists(path))
+            {
+                Process.Start(path);
+            }
+            else
+            {
+                MessageBox.Show("Can't find Netease Music", "Error");
             }
         }
     }
