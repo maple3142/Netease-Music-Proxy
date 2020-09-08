@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -100,6 +101,29 @@ namespace Netease_Music_Proxy
             else
             {
                 MessageBox.Show("Can't find Netease Music", "Error");
+            }
+        }
+
+        private void WindowStateChanged(object sender, EventArgs e)
+        {
+            switch (this.WindowState)
+            {
+                case WindowState.Minimized:
+                    this.Hide();
+                    TaskbarIcon tbi = new TaskbarIcon();
+                    tbi.Icon = Netease_Music_Proxy.Properties.Resources.Icon;
+                    tbi.ToolTipText = "Netease Music Proxy";
+                    tbi.TrayRightMouseDown += delegate
+                    {
+                        this.Show();
+                        tbi.Dispose();
+                    };
+                    tbi.TrayMouseDoubleClick += delegate
+                    {
+                        this.Show();
+                        tbi.Dispose();
+                    };
+                    break;
             }
         }
     }
