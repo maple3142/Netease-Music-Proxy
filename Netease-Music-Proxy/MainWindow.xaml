@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:local="clr-namespace:Netease_Music_Proxy"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="Netease Music Proxy" Height="300" Width="480" Closing="WindowClosing" Icon="icon.ico" ResizeMode="CanMinimize" StateChanged="WindowStateChanged">
     <Window.Resources>
@@ -61,7 +62,15 @@
                 <Label Content="Preferred port:"/>
                 <TextBox x:Name="preferredPortTextBox" Text="64538" VerticalAlignment="Center"/>
             </DockPanel>
-            <CheckBox x:Name="showProxyUrlInLogsCheckBox" Content="Show proxied URL in logs" HorizontalAlignment="Left" VerticalAlignment="Center" ToolTipService.ShowOnDisabled="True"/>
+            <DockPanel>
+                <Label Content="Log Filter:"/>
+                <xctk:CheckComboBox x:Name="logFilterCheckComboBox" 
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding items}"
+                    SelectedValue="{Binding SelectedValue}"
+                    SelectedItemsOverride="{Binding SelectedItems}"
+                />
+            </DockPanel>
             <CheckBox x:Name="autoUpdateProxyCheckBox" Content="Automatically update NCM proxy config (Broken)" HorizontalAlignment="Left" VerticalAlignment="Center" ToolTipService.ShowOnDisabled="True" IsChecked="False" IsEnabled="False"/>
         </StackPanel>
         <Border BorderThickness="1" BorderBrush="Black" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">

@@ -25,12 +25,22 @@ namespace Netease_Music_Proxy
 
         public void Start(int requestedPort)
         {
-            if (!Utils.isTcpPortAvailable(requestedPort))
+            try
             {
-                requestedPort = 0;  // automatically let system choose a port if not available
+                proxy = new MusicProxy(requestedPort);
+                port = proxy.Start();
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                OnLogMessage?.Invoke("error", ex.ToString());
+                OnLogMessage?.Invoke("info", "Letting OS choose a random port");
+                proxy = new MusicProxy(0);  // automatically let system choose a port if not available
+                port = proxy.Start();
             }
-            proxy = new MusicProxy(requestedPort);
-            port = proxy.Start();
+            proxy.OnRequestUrl += str =>
+            {
+                OnLogMessage?.Invoke("proxy", str);
+            };
         }
 
 
@@ -63,5 +73,7 @@ namespace Netease_Music_Proxy
             if (!IsAbleToUpdateConfig()) return;
             helper.RestoreConfig();
         }
+
+        public event Action<string, string> OnLogMessage;
     }
 }

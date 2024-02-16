@@ -4,6 +4,8 @@ using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,10 +27,65 @@ namespace Netease_Music_Proxy
     /// <summary>
     /// MainWindow.xaml 的互動邏輯
     /// </summary>
+    /// 
+    class LogFilterDataContext
+    {
+        public ObservableCollection<string> items { get; }
+        private Dictionary<string, bool> selectionTable;
+        public LogFilterDataContext(Dictionary<string, bool> initItems)
+        {
+            items = new ObservableCollection<string>(initItems.Keys);
+            selectionTable = new Dictionary<string, bool>(initItems);
+        }
+        private void resetSelectedTable()
+        {
+            foreach (string item in items)
+            {
+                selectionTable[item] = false;
+            }
+        }
+        public string SelectedValue
+        {
+            set
+            {
+                resetSelectedTable();
+                foreach (string name in value.Split(','))
+                {
+                    selectionTable[name] = true;
+                }
+            }
+        }
+
+        public ObservableCollection<string> SelectedItems
+        {
+            get
+            {
+                return new ObservableCollection<string>(
+                    (from x in items where selectionTable[x] select x).ToList()
+                );
+            }
+        }
+
+        public bool isNameSelected(string name)
+        {
+            bool val;
+            selectionTable.TryGetValue(name, out val);
+            return val;
+        }
+    }
+
     public partial class MainWindow : Window
     {
 
         private NeteaseMusicProxyManager manager = new NeteaseMusicProxyManager();
+        private LogFilterDataContext ldc = new LogFilterDataContext(
+            new Dictionary<string, bool>
+            {
+                { "info", true },
+                { "error", true },
+                { "proxy", false }
+            }
+        );
         public MainWindow()
         {
             InitializeComponent();
@@ -37,7 +94,7 @@ namespace Netease_Music_Proxy
                 autoUpdateProxyCheckBox.IsEnabled = false;
                 autoUpdateProxyCheckBox.ToolTip = "Cannot read Netease Music config.";
             }
-            var isRunning = Process.GetProcessesByName("cloudmusic").FirstOrDefault(p => p.MainModule.FileName.Contains("Netease")) != default(Process);
+            logFilterCheckComboBox.DataContext = ldc;
         }
         private void ToggleClicked(object sender, RoutedEventArgs e)
         {
@@ -55,8 +112,7 @@ namespace Netease_Music_Proxy
                     MessageBox.Show("Preferred port is not an integer");
                     return;
                 }
-                Console.WriteLine(port);
-                manager.Start((int) (port % 65536));
+                manager.Start((int)(port % 65536));
                 toggleBtn.Content = "Stop";
                 WriteLine("Proxy server listening on port " + manager.GetPort() + " using X-Real-IP: " + manager.proxy.getChinaIP());
                 if (autoUpdateProxyCheckBox.IsChecked ?? false)
@@ -64,13 +120,13 @@ namespace Netease_Music_Proxy
                     manager.UpdateConfigAccordingly();
                     WriteLine("Updated config to use proxy");
                 }
-                manager.proxy.OnRequestUrl += url =>
+                manager.OnLogMessage += (tag, msg) =>
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        if (showProxyUrlInLogsCheckBox.IsChecked ?? false)
+                        if (ldc.isNameSelected(tag))
                         {
-                            WriteLine("[Proxy] " + url);
+                            WriteLine("[" + tag + "] " + msg);
                         }
                     });
                 };
