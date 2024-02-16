@@ -7,6 +7,37 @@
         xmlns:local="clr-namespace:Netease_Music_Proxy"
         mc:Ignorable="d"
         Title="Netease Music Proxy" Height="300" Width="480" Closing="WindowClosing" Icon="icon.ico" ResizeMode="CanMinimize" StateChanged="WindowStateChanged">
+    <Window.Resources>
+        <Style x:Key="ReadOnlyTextBox" TargetType="TextBox">
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid x:Name="RootElement">
+                            <ScrollViewer x:Name="ContentElement"
+                             Margin="{TemplateBinding Margin}"
+                             Background="{TemplateBinding Background}"
+                             BorderBrush="{TemplateBinding BorderBrush}"
+                             BorderThickness="{TemplateBinding BorderThickness}"
+                             IsTabStop="{TemplateBinding IsTabStop}"
+                             Padding="{TemplateBinding Padding}" 
+                             HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
+                             VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
+                             Content="{TemplateBinding Text}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -27,8 +58,8 @@
         </StackPanel>
         <CheckBox x:Name="autoUpdateProxyCheckBox" Content="Automatically update Netease Music proxy config" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTipService.ShowOnDisabled="True" IsChecked="False" IsEnabled="False"/>
         <Border BorderThickness="1" BorderBrush="Black" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
-            <ScrollViewer x:Name="outputScrollViewer" Padding="5" ScrollChanged="OutputScrollChanged">
-                <TextBlock x:Name="outputBox"  TextWrapping="Wrap" ></TextBlock>
+            <ScrollViewer x:Name="outputScrollViewer" Padding="5"  CanContentScroll="True">
+                <TextBox x:Name="outputBox" Style="{StaticResource ReadOnlyTextBox}"></TextBox>
             </ScrollViewer>
         </Border>
     </Grid>

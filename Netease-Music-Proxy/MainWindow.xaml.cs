@@ -50,8 +50,7 @@ namespace Netease_Music_Proxy
             {
                 manager.Start();
                 toggleBtn.Content = "Stop";
-                WriteLine("Proxy server listening on port " + manager.GetPort());
-                WriteLine("Using X-Real-IP: " + manager.proxy.getChinaIP());
+                WriteLine("Proxy server listening on port " + manager.GetPort() + " using X-Real-IP: " + manager.proxy.getChinaIP());
                 if (autoUpdateProxyCheckBox.IsChecked ?? false)
                 {
                     manager.UpdateConfigAccordingly();
@@ -61,7 +60,7 @@ namespace Netease_Music_Proxy
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        WriteLine(url);
+                        WriteLine("[Proxy] " + url);
                     });
                 };
             }
@@ -81,12 +80,6 @@ namespace Netease_Music_Proxy
         private void WriteLine(string str)
         {
             outputBox.Text += str + "\n";
-        }
-
-
-        private void OutputScrollChanged(object sender, ScrollChangedEventArgs e)
-        {
-            outputScrollViewer.ScrollToVerticalOffset(outputScrollViewer.ExtentHeight);
         }
 
         private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
