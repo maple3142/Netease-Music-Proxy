@@ -10,16 +10,16 @@ namespace Netease_Music_Proxy
     class MusicProxy
     {
         private ProxyServer server;
-        public MusicProxy()
+        public MusicProxy(int port = 64538)
         {
-            server = new ProxyServer(false, false, false);
+            server = new ProxyServer(true, false, false);
             server.BeforeRequest += OnRequest;
-            var explicitEndPoint = new ExplicitProxyEndPoint(IPAddress.Loopback, 0, false);
+            var explicitEndPoint = new ExplicitProxyEndPoint(IPAddress.Loopback, port, true);
             server.AddEndPoint(explicitEndPoint);
         }
 
         private string chinaIp = null;
-        private string getChinaIP()
+        public string getChinaIP()
         {
             if (chinaIp == null)
             {
@@ -31,6 +31,7 @@ namespace Netease_Music_Proxy
 
         public Task OnRequest(object sender, SessionEventArgs e)
         {
+            OnRequestUrl?.Invoke(e.HttpClient.Request.Url);
             var headers = e.HttpClient.Request.Headers;
             headers.AddHeader("X-Real-IP", getChinaIP());
             return Task.FromResult(0);
@@ -38,7 +39,7 @@ namespace Netease_Music_Proxy
 
         public int Start()
         {
-            server.Start();
+            server.Start(false);
             var end = server.ProxyEndPoints[0];
             return end.Port;
         }
@@ -47,5 +48,7 @@ namespace Netease_Music_Proxy
         {
             server.Stop();
         }
+
+        public event Action<string> OnRequestUrl;
     }
 }

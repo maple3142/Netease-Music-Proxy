@@ -8,7 +8,7 @@ namespace Netease_Music_Proxy
 {
     class NeteaseMusicProxyManager
     {
-        private MusicProxy proxy;
+        public MusicProxy proxy;
         private NeteaseMusicConfigHelper helper = new NeteaseMusicConfigHelper();
 
         public bool IsProxyRunning()
@@ -38,6 +38,7 @@ namespace Netease_Music_Proxy
         public void Stop()
         {
             helper.RestoreConfig();
+            proxy.Stop();
             proxy = null;
             port = -1;
         }

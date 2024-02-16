@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Netease_Music_Proxy
 {
@@ -39,22 +40,30 @@ namespace Netease_Music_Proxy
         }
         private void ToggleClicked(object sender, RoutedEventArgs e)
         {
-            var isCloudMusicRunning = Process.GetProcessesByName("cloudmusic").FirstOrDefault(p => p.MainModule.FileName.Contains("Netease")) != default(Process);
-            if (isCloudMusicRunning)
-            {
-                MessageBox.Show("Netease Music is running, please close it first before changing proxy status.", "Warning");
-                return;
-            }
+            //var isCloudMusicRunning = Process.GetProcessesByName("cloudmusic").FirstOrDefault(p => p.MainModule.FileName.Contains("Netease")) != default(Process);
+            //if (isCloudMusicRunning)
+            //{
+            //    MessageBox.Show("Netease Music is running, please close it first before changing proxy status.", "Warning");
+            //    return;
+            //}
             if (!manager.IsProxyRunning())
             {
                 manager.Start();
                 toggleBtn.Content = "Stop";
                 WriteLine("Proxy server listening on port " + manager.GetPort());
+                WriteLine("Using X-Real-IP: " + manager.proxy.getChinaIP());
                 if (autoUpdateProxyCheckBox.IsChecked ?? false)
                 {
                     manager.UpdateConfigAccordingly();
                     WriteLine("Updated config to use proxy");
                 }
+                manager.proxy.OnRequestUrl += url =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        WriteLine(url);
+                    });
+                };
             }
             else
             {
