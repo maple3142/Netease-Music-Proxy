@@ -115,6 +115,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="App.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="NeteaseMusicProxyManager.cs" />
     <Compile Include="NeteaseMusicConfigHelper.cs" />
     <Compile Include="MusicProxy.cs" />

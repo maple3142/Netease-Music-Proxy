@@ -56,7 +56,14 @@
             <Button x:Name="toggleBtn" Width="75" Click="ToggleClicked" Content="Start" ToolTip="Start Proxy"/>
             <Button x:Name="launchBtn" Width="75" Content="Launch" Click="LaunchClicked" ToolTip="Launch Netease Music"/>
         </StackPanel>
-        <CheckBox x:Name="autoUpdateProxyCheckBox" Content="Automatically update Netease Music proxy config" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTipService.ShowOnDisabled="True" IsChecked="False" IsEnabled="False"/>
+        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <DockPanel>
+                <Label Content="Preferred port:"/>
+                <TextBox x:Name="preferredPortTextBox" Text="64538" VerticalAlignment="Center"/>
+            </DockPanel>
+            <CheckBox x:Name="showProxyUrlInLogsCheckBox" Content="Show proxied URL in logs" HorizontalAlignment="Left" VerticalAlignment="Center" ToolTipService.ShowOnDisabled="True"/>
+            <CheckBox x:Name="autoUpdateProxyCheckBox" Content="Automatically update NCM proxy config (Broken)" HorizontalAlignment="Left" VerticalAlignment="Center" ToolTipService.ShowOnDisabled="True" IsChecked="False" IsEnabled="False"/>
+        </StackPanel>
         <Border BorderThickness="1" BorderBrush="Black" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
             <ScrollViewer x:Name="outputScrollViewer" Padding="5"  CanContentScroll="True">
                 <TextBox x:Name="outputBox" Style="{StaticResource ReadOnlyTextBox}"></TextBox>

@@ -10,7 +10,7 @@ namespace Netease_Music_Proxy
     class MusicProxy
     {
         private ProxyServer server;
-        public MusicProxy(int port = 64538)
+        public MusicProxy(int port)
         {
             server = new ProxyServer(true, false, false);
             server.BeforeRequest += OnRequest;

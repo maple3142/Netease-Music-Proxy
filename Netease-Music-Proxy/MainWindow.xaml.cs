@@ -1,6 +1,7 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,7 +49,14 @@ namespace Netease_Music_Proxy
             //}
             if (!manager.IsProxyRunning())
             {
-                manager.Start();
+                uint port = 0;
+                if (!UInt32.TryParse(preferredPortTextBox.Text, out port))
+                {
+                    MessageBox.Show("Preferred port is not an integer");
+                    return;
+                }
+                Console.WriteLine(port);
+                manager.Start((int) (port % 65536));
                 toggleBtn.Content = "Stop";
                 WriteLine("Proxy server listening on port " + manager.GetPort() + " using X-Real-IP: " + manager.proxy.getChinaIP());
                 if (autoUpdateProxyCheckBox.IsChecked ?? false)
@@ -60,7 +68,10 @@ namespace Netease_Music_Proxy
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        WriteLine("[Proxy] " + url);
+                        if (showProxyUrlInLogsCheckBox.IsChecked ?? false)
+                        {
+                            WriteLine("[Proxy] " + url);
+                        }
                     });
                 };
             }

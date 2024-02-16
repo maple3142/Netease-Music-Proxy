@@ -23,9 +23,13 @@ namespace Netease_Music_Proxy
 
         private int port = -1;
 
-        public void Start()
+        public void Start(int requestedPort)
         {
-            proxy = new MusicProxy();
+            if (!Utils.isTcpPortAvailable(requestedPort))
+            {
+                requestedPort = 0;  // automatically let system choose a port if not available
+            }
+            proxy = new MusicProxy(requestedPort);
             port = proxy.Start();
         }
 
