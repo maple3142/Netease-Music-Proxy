@@ -46,6 +46,10 @@ namespace Netease_Music_Proxy
         }
         public string SelectedValue
         {
+            get
+            {
+                return string.Join(",", from name in items where selectionTable[name] select name);
+            }
             set
             {
                 resetSelectedTable();
@@ -182,14 +186,21 @@ namespace Netease_Music_Proxy
                     TaskbarIcon tbi = new TaskbarIcon();
                     tbi.Icon = Netease_Music_Proxy.Properties.Resources.Icon;
                     tbi.ToolTipText = "Netease Music Proxy";
-                    tbi.TrayRightMouseDown += delegate
+                    tbi.ContextMenu = new ContextMenu();
+                    tbi.TrayRightMouseDown += (s, evt) =>
                     {
+                        evt.Handled = true;
                         this.Show();
+                        this.WindowState = WindowState.Normal;
+                        this.Activate();
                         tbi.Dispose();
                     };
-                    tbi.TrayMouseDoubleClick += delegate
+                    tbi.TrayMouseDoubleClick += (s, evt) =>
                     {
+                        evt.Handled = true;
                         this.Show();
+                        this.WindowState = WindowState.Normal;
+                        this.Activate();
                         tbi.Dispose();
                     };
                     break;
