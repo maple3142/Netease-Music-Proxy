@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install dependencies using nuget
+        run: nuget restore
+
+      - name: Build
+        run: msbuild /p:Configuration=Release
+
+      - name: Pack to zip
+        run: 7z a -tzip -r build.zip .\Netease-Music-Proxy\bin\Release\
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build.zip
