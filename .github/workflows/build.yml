@@ -55,4 +55,5 @@ jobs:
         with:
           url: 'https://ntfy.sh'
           topic: 'netease-music-proxy-github-actions-done'
-          message: 'Netease-Music-Proxy build done, tag: ${{ github.ref_name }}, release url: ${{ steps.create_release.outputs.html_url }}'
+          title: 'Netease-Music-Proxy ${{ github.ref_name }} build done'
+          details: 'Release URL: ${{ steps.create_release.outputs.html_url }}'
