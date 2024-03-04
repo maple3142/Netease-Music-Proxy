@@ -25,10 +25,10 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Netease-Music-Proxy-${{ github.ref_name }}.exe
+          name: Netease-Music-Proxy-${{ github.sha }}
           path: .\Netease-Music-Proxy\bin\Release\Netease-Music-Proxy.exe
 
-      - name: Create Release
+      - name: Create Draft Release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -38,3 +38,21 @@ jobs:
           release_name: ${{ github.ref_name }}
           draft: true
           prerelease: false
+      
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: .\Netease-Music-Proxy\bin\Release\Netease-Music-Proxy.exe
+          asset_name: Netease-Music-Proxy-${{ github.ref_name }}.exe
+          asset_content_type: application/x-msdownload
+
+      - name: Notify
+        uses: niniyas/ntfy-action@master
+        with:
+          url: 'https://ntfy.sh' or '${{ secrets.NTFY_URL }}'
+          topic: 'netease-music-proxy-github-actions-done' or '${{ secrets.NTFY_TOPIC }}'
+          message: 'Netease-Music-Proxy build done, tag: ${{ github.ref_name }}, release url: ${{ steps.create_release.outputs.html_url }}'
