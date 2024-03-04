@@ -2,8 +2,8 @@ name: Build
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - 'v*.*'
 
 jobs:
   build:
@@ -15,18 +15,26 @@ jobs:
 
       - name: Install dependencies using nuget
         run: nuget restore
-      
+
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
 
       - name: Build
         run: msbuild /p:Configuration=Release
 
-      - name: Pack to zip
-        run: 7z a -tzip -r build.zip .\Netease-Music-Proxy\bin\Release\
-
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build
-          path: build.zip
+          name: Netease-Music-Proxy-${{ github.ref }}.exe
+          path: .\Netease-Music-Proxy\bin\Release\Netease-Music-Proxy.exe
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: true
+          prerelease: false
