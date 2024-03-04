@@ -53,6 +53,6 @@ jobs:
       - name: Notify
         uses: niniyas/ntfy-action@master
         with:
-          url: 'https://ntfy.sh' or '${{ secrets.NTFY_URL }}'
-          topic: 'netease-music-proxy-github-actions-done' or '${{ secrets.NTFY_TOPIC }}'
+          url: 'https://ntfy.sh'
+          topic: 'netease-music-proxy-github-actions-done'
           message: 'Netease-Music-Proxy build done, tag: ${{ github.ref_name }}, release url: ${{ steps.create_release.outputs.html_url }}'
