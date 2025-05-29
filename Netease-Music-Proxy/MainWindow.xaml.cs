@@ -98,6 +98,16 @@ namespace Netease_Music_Proxy
                 autoUpdateProxyCheckBox.IsEnabled = false;
                 autoUpdateProxyCheckBox.ToolTip = "Cannot read Netease Music config.";
             }
+            manager.OnLogMessage += (tag, msg) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    if (ldc.isNameSelected(tag))
+                    {
+                        WriteLine("[" + tag + "] " + msg);
+                    }
+                });
+            };
             logFilterCheckComboBox.DataContext = ldc;
         }
         private void ToggleClicked(object sender, RoutedEventArgs e)
@@ -124,16 +134,6 @@ namespace Netease_Music_Proxy
                     manager.UpdateConfigAccordingly();
                     WriteLine("Updated config to use proxy");
                 }
-                manager.OnLogMessage += (tag, msg) =>
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        if (ldc.isNameSelected(tag))
-                        {
-                            WriteLine("[" + tag + "] " + msg);
-                        }
-                    });
-                };
             }
             else
             {
