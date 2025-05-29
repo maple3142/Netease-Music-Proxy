@@ -120,15 +120,20 @@ namespace Netease_Music_Proxy
             //}
             if (!manager.IsProxyRunning())
             {
-                uint port = 0;
-                if (!UInt32.TryParse(preferredPortTextBox.Text, out port))
+                uint parsedPort = 0;
+                if (!UInt32.TryParse(preferredPortTextBox.Text, out parsedPort))
                 {
                     MessageBox.Show("Preferred port is not an integer");
                     return;
                 }
-                manager.Start((int)(port % 65536));
+                int port = (int)(parsedPort % 65536);
+                manager.Start(port);
                 toggleBtn.Content = "Stop";
                 WriteLine("Proxy server listening on port " + manager.GetPort() + " using X-Real-IP: " + manager.proxy.getChinaIP());
+                if (port != manager.GetPort())
+                {
+                    WriteLine($"The proxy listen on {manager.GetPort()} instead of the desired port {port}");
+                }
                 if (autoUpdateProxyCheckBox.IsChecked ?? false)
                 {
                     manager.UpdateConfigAccordingly();

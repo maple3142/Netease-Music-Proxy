@@ -60,7 +60,7 @@
         <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
             <DockPanel>
                 <Label Content="Preferred port:"/>
-                <TextBox x:Name="preferredPortTextBox" Text="64538" VerticalAlignment="Center"/>
+                <TextBox x:Name="preferredPortTextBox" Text="27777" VerticalAlignment="Center"/>
             </DockPanel>
             <DockPanel>
                 <Label Content="Log Filter:"/>
